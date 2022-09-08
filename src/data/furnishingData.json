@@ -1,0 +1,70 @@
+{
+    "FunishingData": [
+      {
+        "MainCategory": "가구",
+        "CategoryList": [
+          {
+            "SubCategory": "의자",
+            "CategoryList": [
+              {
+                "SmallCategory": "다이닝체어",
+                "ProductList": [
+                  {
+                    "productBrand": "프리츠한센",
+                    "productEngBrand": "Fritz Hansen",
+                    "productList": [
+                      {
+                        "productName": "앤트 체어",
+                        "productEngName": "Ant Chair"
+                      },
+                      {
+                        "productName": "해머 체어",
+                        "productEngName": "Ant Chair"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "SmallCategory": "벤치/스툴",
+                "ProductList": [
+                  {
+                    "productBrand": "게브르더 토넷 비엔나",
+                    "productEngBrand": "ebrüder Thonet Vienna",
+                    "productList": [
+                      {
+                        "productName": "코트 옷걸이 벤치",
+                        "productEngName": "Coat Rack Bench"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "SubCategory": "암체어/라운지체어",
+            "CategoryList": [
+              {
+                "SmallCategory": "암체어",
+                "ProductList": []
+              }
+            ]
+          },
+          {
+            "SubCategory": "테이블",
+            "CategoryList": [
+              {
+                "SmallCategory": "사이드 테이블",
+                "ProductList": []
+              },
+              {
+                "SmallCategory": "책상",
+                "ProductList": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
