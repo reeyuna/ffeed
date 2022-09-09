@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setDepth } from "./store/appSlice";
 import {
   createTheme,
   MenuItem,
@@ -7,46 +9,49 @@ import {
   Tabs,
   ThemeProvider,
 } from "@mui/material";
-import "./App.css";
-import furnishingData from "./data/furnishingData.json";
-import SecondDepth from "./SecondDepth";
-import { imageFileData } from "./data/imageFileData";
-import { useDispatch, useSelector } from "react-redux";
-import { setDepth } from "./store/appSlice";
-import ThirdDepth from "./ThirdDepth";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import furnishingData from "./data/furnishingData.json";
+import { imageFileData } from "./data/imageFileData";
+
+import SecondDepth from "./SecondDepth";
+import ThirdDepth from "./ThirdDepth";
 
 function App() {
   const dispatch = useDispatch();
 
   const [selectValue, setSelectValue] = useState(0);
   const [secondSelectValue, setSecondSelectValue] = useState(0);
-
   const [value, setValue] = useState(0);
 
   const depth = useSelector((state) => state.app.depth);
 
   const firstDepthArray = furnishingData.FunishingData;
-
   const itemArray = furnishingData.FunishingData[0].CategoryList;
 
+  // 1) 1 번째 depth에서 tab클릭 시 실행
+  // 2) 1 번째 depth에서 좌측 상단 select option 클릭 시 실행
   const handleOnClickFirstDepth = (e, index) => {
+    // depth를 2로 변경
     dispatch(setDepth(2));
 
+    // select에 표시되는 값 변경
     setSelectValue(index + 1);
   };
 
+  // 1 번째 depth에서 좌측 상단 select option 클릭 시 실행
   const handleSelect = (e) => {
     dispatch(setDepth(2));
 
     setSelectValue(e.target.value);
   };
 
+  // 3 번째 depth에서 좌측 상단 select option 클릭 시 실행
   const handleOnClickThirdDepth = (e) => {
     setSecondSelectValue(e.target.value);
   };
 
+  // depth에 따라 보여지는 main content가 바뀜
   const showTabItems = () => {
     switch (depth) {
       case 2:
@@ -63,8 +68,9 @@ function App() {
   return (
     <div>
       <div style={{ height: "70px" }}>
-        <ThemeProvider theme={theme}>
-          {(depth === 1 || depth === 2) && (
+        {/* 1 번째, 2 번째 depth에서 보여질 상단 select */}
+        {(depth === 1 || depth === 2) && (
+          <ThemeProvider theme={theme}>
             <Select
               value={selectValue}
               defaultValue={0}
@@ -89,9 +95,63 @@ function App() {
                 </MenuItem>
               ))}
             </Select>
-          )}
-        </ThemeProvider>
+          </ThemeProvider>
+        )}
 
+        {/*  첫 번째 depth에서 보여지는 화면(tab, main content) */}
+        {depth === 1 && (
+          <>
+            <ThemeProvider theme={theme}>
+              <Tabs sx={{ marginBottom: 7 }} value={value} variant="scrollable">
+                <Tab label="제품 전체" index={0} />
+                {firstDepthArray?.map((item, index) => (
+                  <Tab
+                    key={index}
+                    label={item.MainCategory}
+                    index={index + 1}
+                    onClick={(e) => handleOnClickFirstDepth(e, index)}
+                  />
+                ))}
+              </Tabs>
+            </ThemeProvider>
+            {value === 0 && (
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(2,1fr)",
+                  columnGap: 8,
+                }}
+              >
+                {imageFileData?.map((item, index) => (
+                  <div key={index} style={{ marginBottom: "40px" }}>
+                    <img
+                      src={`${process.env.PUBLIC_URL}/images/${item.url}.jpg`}
+                      style={{
+                        width: "100%",
+                        height: "auto",
+                        aspectRatio: "1 / 1",
+                        objectFit: "cover",
+                      }}
+                    />
+                    <div style={{ marginTop: 18 }}>
+                      <div style={{ fontSize: "1.2rem", fontWeight: "bold" }}>
+                        {item.name}{" "}
+                        <span style={{ color: "grey" }}>({item.EName})</span>
+                      </div>
+                      <div style={{ marginTop: 8, fontWeight: "bold" }}>
+                        {item.ESubName}
+                      </div>
+                      <div style={{ marginTop: 5, color: "grey" }}>
+                        {item.subName}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+        {/*  세 번째 depth에서 보여지는 화면(상단 select) */}
         {depth === 3 && (
           <div style={{ display: "flex", alignItems: "center" }}>
             <div
@@ -151,63 +211,12 @@ function App() {
         )}
       </div>
 
-      {depth === 1 && (
-        <>
-          <ThemeProvider theme={theme}>
-            <Tabs sx={{ marginBottom: 7 }} value={value} variant="scrollable">
-              <Tab label="제품 전체" index={0} />
-              {firstDepthArray?.map((item, index) => (
-                <Tab
-                  key={index}
-                  label={item.MainCategory}
-                  index={index + 1}
-                  onClick={(e) => handleOnClickFirstDepth(e, index)}
-                />
-              ))}
-            </Tabs>
-          </ThemeProvider>
-          {value === 0 && (
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(2,1fr)",
-                columnGap: 8,
-              }}
-            >
-              {imageFileData?.map((item, index) => (
-                <div key={index} style={{ marginBottom: "40px" }}>
-                  <img
-                    src={`${process.env.PUBLIC_URL}/images/${item.url}.jpg`}
-                    style={{
-                      width: "100%",
-                      height: "auto",
-                      aspectRatio: "1 / 1",
-                      objectFit: "cover",
-                    }}
-                  />
-                  <div style={{ marginTop: 18 }}>
-                    <div style={{ fontSize: "1.2rem", fontWeight: "bold" }}>
-                      {item.name}{" "}
-                      <span style={{ color: "grey" }}>({item.EName})</span>
-                    </div>
-                    <div style={{ marginTop: 8, fontWeight: "bold" }}>
-                      {item.ESubName}
-                    </div>
-                    <div style={{ marginTop: 5, color: "grey" }}>
-                      {item.subName}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </>
-      )}
       {showTabItems()}
     </div>
   );
 }
 
+// style
 const theme = createTheme({
   components: {
     MuiOutlinedInput: {
@@ -228,13 +237,6 @@ const theme = createTheme({
             background: "#2b2b2b",
             height: "6px",
           },
-        },
-      },
-      styleOverrides: {
-        root: {
-          // borderRight: 1,
-          // borderColor: "divider",
-          // backgroundColor: "#F8F8FA",
         },
       },
     },

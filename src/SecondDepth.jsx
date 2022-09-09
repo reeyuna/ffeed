@@ -1,35 +1,20 @@
 import { useEffect, useState } from "react";
-import {
-  createTheme,
-  MenuItem,
-  Select,
-  Tab,
-  Tabs,
-  ThemeProvider,
-} from "@mui/material";
-import "./App.css";
-import { imageFileData } from "./data/imageFileData";
-import furnishingData from "./data/furnishingData.json";
-import ThirdDepth from "./ThirdDepth";
 import { useDispatch, useSelector } from "react-redux";
 import { setDepth } from "./store/appSlice";
-import App from "./App";
+import { createTheme, Tab, Tabs, ThemeProvider } from "@mui/material";
+import { imageFileData } from "./data/imageFileData";
+import furnishingData from "./data/furnishingData.json";
 
 export default function SecondDepth() {
   const dispatch = useDispatch();
 
-  const [selectValue, setSelectValue] = useState(0);
   const [value, setValue] = useState(0);
-
-  const depth = useSelector((state) => state.app.depth);
-
   const [newArray, setNewArray] = useState([]);
-
-  const firstDepthArray = furnishingData.FunishingData;
 
   const itemArray = furnishingData.FunishingData[0].CategoryList;
 
   useEffect(() => {
+    // 가져온 데이터 맨 앞에 '전체'카테고리 추가
     setNewArray([
       {
         SubCategory: "전체",
@@ -38,50 +23,39 @@ export default function SecondDepth() {
     ]);
   }, []);
 
+  // tab이 바뀔 때 실행
   const handleOnChange = (e, next) => {
     setValue(next);
   };
 
+  // '의자'를 클릭하면 3 번째 depth로 이동
   const handleOnClickSecondDepth = () => {
     dispatch(setDepth(3));
-  };
-
-  const showTabItems2 = () => {
-    switch (value) {
-      case 1:
-        return <ThirdDepth />;
-        break;
-
-      default:
-        break;
-    }
   };
 
   return (
     <div>
       <ThemeProvider theme={theme}>
-        {depth === 2 && (
-          <Tabs
-            value={value}
-            sx={{ marginBottom: 7 }}
-            onChange={handleOnChange}
-            variant="scrollable"
-          >
-            {newArray?.map((item, index) => (
-              <Tab
-                key={index}
-                value={index}
-                label={item.SubCategory}
-                index={index}
-                onClick={() => {
-                  if (index === 1) handleOnClickSecondDepth();
-                }}
-              />
-            ))}
-          </Tabs>
-        )}
+        <Tabs
+          value={value}
+          sx={{ marginBottom: 7 }}
+          onChange={handleOnChange}
+          variant="scrollable"
+        >
+          {newArray?.map((item, index) => (
+            <Tab
+              key={index}
+              value={index}
+              label={item.SubCategory}
+              index={index}
+              onClick={() => {
+                if (index === 1) handleOnClickSecondDepth();
+              }}
+            />
+          ))}
+        </Tabs>
       </ThemeProvider>
-
+      {/* 카테고리가 전체일 때 보여지는 화면 */}
       {value === 0 && (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)" }}>
           {imageFileData?.map((item, index) => (
@@ -115,6 +89,7 @@ export default function SecondDepth() {
   );
 }
 
+// style
 const theme = createTheme({
   components: {
     MuiTabs: {
@@ -125,13 +100,6 @@ const theme = createTheme({
             background: "#2b2b2b",
             height: "6px",
           },
-        },
-      },
-      styleOverrides: {
-        root: {
-          // borderRight: 1,
-          // borderColor: "divider",
-          // backgroundColor: "#F8F8FA",
         },
       },
     },
